@@ -99,18 +99,26 @@ class Channel:
         subscription = self.compare(other)
         return int(self.channel_subs) + int(subscription)
 
-    def __deduction__(self, other):
+    def __sub__(self, other):
         subscription = self.compare(other)
         return int(self.channel_subs) - int(subscription)
 
-    def __equals__(self, other):
+    def __eq__(self, other):
         subscription = self.compare(other)
         return int(self.channel_subs) == int(subscription)
 
-    def __more__(self, other):
+    def __gt__(self, other):
         subscription = self.compare(other)
         return int(self.channel_subs) > int(subscription)
 
-    def __less__(self, other):
+    def __ge__(self, other):
+        subscription = self.compare(other)
+        return int(self.channel_subs) >= int(subscription)
+
+    def __lt__(self, other):
         subscription = self.compare(other)
         return int(self.channel_subs) < int(subscription)
+
+    def __le__(self, other):
+        subscription = self.compare(other)
+        return int(self.channel_subs) <= int(subscription)
