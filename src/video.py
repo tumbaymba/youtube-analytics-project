@@ -1,11 +1,12 @@
-from src.channel import Channel
+import os
+
+from googleapiclient.discovery import build
 
 
-class Video(Channel):
+class Video:
 
-    def __init__(self, video_id): #channel_id):
+    def __init__(self, video_id):
 
-        #super().__init__(channel_id)
         self.video_id = video_id
         try:
             youtube = self.get_service()
@@ -23,8 +24,16 @@ class Video(Channel):
             self.view_count = None
             self.like_count = None
 
+
+
+    @classmethod
+    def get_service(cls):
+        api_key: str = os.getenv('API_KEY')
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        return youtube
+
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.channel_title}'
 
 
 class PLVideo(Video):
