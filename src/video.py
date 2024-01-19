@@ -7,6 +7,8 @@ class Video:
 
     def __init__(self, video_id):
 
+        self.likes = None
+        self.duration = None
         self.video_id = video_id
         try:
             youtube = self.get_service()
