@@ -14,14 +14,14 @@ class Video:
             youtube = self.get_service()
             self.video = youtube.videos().list(part='snippet,statistics,contentDetails,topicDetails',
                                                id=self.video_id).execute()
-            self.channel_title = self.video['items'][0]['snippet']['title']
+            self.title = self.video['items'][0]['snippet']['title']
             self.channel_url = 'https://www.youtube.com/watch?v=' + self.video_id
             self.view_count = self.video['items'][0]['statistics']['viewCount']
             self.like_count = self.video['items'][0]['statistics']['likeCount']
         except IndexError:
             print('Non-existen ID')
             self.youtube = None
-            self.channel_title = None
+            self.title = None
             self.channel_url = None
             self.view_count = None
             self.like_count = None
