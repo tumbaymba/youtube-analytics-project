@@ -1,30 +1,23 @@
 import os
-# from channel import Channel
 from datetime import timedelta
 
+import isodate
 from googleapiclient.discovery import build
-
-api_key: str = os.getenv('API_KEY')
-counter = 0
 
 
 class PlayList:
-    # api_key: str = os.getenv('API_KEY')
-
     def __init__(self, playlist_id):
         self.playlist_id = playlist_id
-        self.title = self.playlists_to_print()
-        self.url = f"https://www.youtube.com/playlist?list={playlist_id}"
+        playlist_info = self.get_service().playlists().list(id=self.playlist_id,
+                                                            part='snippet',
+                                                            ).execute()
+        self.title = playlist_info['items'][0]['snippet']['title']
+        self.url = f'https://www.youtube.com/playlist?list={self.playlist_id}'
 
     @classmethod
     def get_service(cls):
-
-        youtube = build('youtube', 'v3', developerKey=api_key)
-        return youtube
-
-    def playlists_to_print(self):
-
-        playlists = self.get_service().playlists().list(channelId='@moscowdjangoru', part='contentDetails,snippet')
+        api_key: str = os.getenv('API_KEY')
+        return build('youtube', 'v3', developerKey=api_key)
 
     def get_video_response(self):
 
@@ -36,40 +29,31 @@ class PlayList:
                                                           id=','.join(video_ids)).execute()
         return video_response
 
-    def get_duration(self):
-        time_list = []
-        counter1 = 0
-        time = self.get_video_response()['items']
-        for t in time:
-            ratio = time[counter1]['contentDetails']['duration']
-            time_list.append(ratio)
-            counter1 += 1
-        return time_list
-
     @property
     def total_duration(self):
-        minutes = 0
-        seconds = 0
-        for z in self.get_duration():
-            seconds += (z[5:7])
-            minutes += (z[2:4])
-            total_sec = minutes * 60 + seconds
-            total_hours = int(total_sec / 3600)
-            total_minutes = int((total_sec - total_hours * 3600) / 60)
-            total_seconds = int(total_sec - total_hours * 3600 - total_minutes * 60)
-            delta = timedelta(hours=total_hours, minutes=total_minutes, seconds=total_seconds)
-
-        return delta
+        video_response = self.get_video_response()
+        duration = timedelta()
+        for video in video_response['items']:
+            # YouTube video duration is in ISO 8601 format
+            iso_8601_duration = video['contentDetails']['duration']
+            duration += isodate.parse_duration(iso_8601_duration)
+        return duration
 
     def show_best_video(self):
+        video_response = self.get_video_response()
+        max_likes = 0
+        video_id = ''
+        for video in video_response['items']:
+            like_count = int(video['statistics']['likeCount'])
+            if like_count > max_likes:
+                max_likes = like_count
+                video_id = video['id']
 
-        videos = self.get_video_response()['items']
-        for v in videos:
-            best_video = max((videos[counter]['statistics']['likeCount']), key=lambda i: int(i))
+        return f'https://youtu.be/{video_id}'
+pl = PlayList('PLguYHBi01DWr4bRWc4uaguASmo7lW4GCb')
 
-        return f"https://youtu.be/{v['id']}"
-
-
-pl = PlayList('PLv_zOGKKxVpj-n2qLkEM2Hj96LO6uqgQw')
-
-
+print(pl.total_duration)
+#duration = pl.total_duration
+#print(duration)
+#print(str(duration))
+print(pl.show_best_video())
