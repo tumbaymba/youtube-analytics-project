@@ -50,10 +50,10 @@ class PlayList:
                 video_id = video['id']
 
         return f'https://youtu.be/{video_id}'
-pl = PlayList('PLguYHBi01DWr4bRWc4uaguASmo7lW4GCb')
+#pl = PlayList('PLguYHBi01DWr4bRWc4uaguASmo7lW4GCb')
 
-print(pl.total_duration)
+#print(pl.total_duration)
 #duration = pl.total_duration
 #print(duration)
 #print(str(duration))
-print(pl.show_best_video())
+#print(pl.show_best_video())

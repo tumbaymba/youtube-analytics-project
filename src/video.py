@@ -27,7 +27,6 @@ class Video:
             self.like_count = None
 
 
-
     @classmethod
     def get_service(cls):
         api_key: str = os.getenv('API_KEY')
@@ -35,7 +34,7 @@ class Video:
         return youtube
 
     def __str__(self):
-        return f'{self.channel_title}'
+        return f'{self.title}'
 
 
 class PLVideo(Video):
